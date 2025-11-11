@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:_90minutes_zone_mobile/widgets/left_drawer.dart';
+import 'package:_90minutes_zone_mobile/widgets/item_cart.dart';
+import 'package:_90minutes_zone_mobile/models/item_homepage.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -8,9 +11,9 @@ class MyHomePage extends StatelessWidget {
   final String kelas = "C"; //kelas
 
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.shopping_bag, color: Colors.blue),
-    ItemHomepage("My Products", Icons.inventory_2, color: Colors.green),
-    ItemHomepage("Create Products", Icons.add_box, color: Colors.red),
+    ItemHomepage("All Products", Icons.shopping_bag, color: Colors.black),
+    ItemHomepage("My Products", Icons.inventory_2, color: Colors.black87),
+    ItemHomepage("Create Products", Icons.add_box, color: Colors.black54),
   ];
 
   @override
@@ -85,6 +88,8 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
+      // Use the shared LeftDrawer widget
+      drawer: const LeftDrawer(),
     );
   }
 }
@@ -115,66 +120,6 @@ class InfoCard extends StatelessWidget {
             const SizedBox(height: 8.0),
             Text(content),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-  final Color? color;
-
-  ItemHomepage(this.name, this.icon, {this.color});
-}
-
-class ItemCard extends StatelessWidget {
-  // Menampilkan kartu dengan ikon dan nama.
-
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      // Menentukan warna latar belakang berdasarkan properti item.color,
-      // fallback ke warna sekunder tema jika tidak diberikan.
-      color: item.color ?? Theme.of(context).colorScheme.secondary,
-      // Membuat sudut kartu melengkung.
-      borderRadius: BorderRadius.circular(12),
-
-      child: InkWell(
-        // Aksi ketika kartu ditekan.
-        onTap: () {
-          // Menampilkan pesan SnackBar saat kartu ditekan.
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!"),
-              ),
-            );
-        },
-        // Container untuk menyimpan Icon dan Text
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              // Menyusun ikon dan teks di tengah kartu.
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(item.icon, color: Colors.white, size: 30.0),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

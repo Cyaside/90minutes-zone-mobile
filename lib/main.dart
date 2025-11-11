@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:_90minutes_zone_mobile/menu.dart';
+import 'package:_90minutes_zone_mobile/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,26 +12,72 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '90minutesZone',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.blue,
-        ).copyWith(secondary: Colors.blueAccent[400]),
+        brightness: Brightness.light,
+        colorScheme: const ColorScheme(
+          brightness: Brightness.light,
+          primary: Colors.black,
+          onPrimary: Colors.white,
+          secondary: Colors.black87,
+          onSecondary: Colors.white,
+          error: Colors.red,
+          onError: Colors.white,
+          background: Colors.white,
+          onBackground: Colors.black,
+          surface: Colors.white,
+          onSurface: Colors.black,
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        drawerTheme: const DrawerThemeData(backgroundColor: Colors.white),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          labelStyle: TextStyle(color: Colors.black),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black54),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 2),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 2),
+          ),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStateProperty.resolveWith((states) {
+            return Colors.white;
+          }),
+          trackColor: MaterialStateProperty.resolveWith((states) {
+            return states.contains(MaterialState.selected)
+                ? Colors.black
+                : Colors.black26;
+          }),
+        ),
+        textTheme: ThemeData.light().textTheme.apply(
+          bodyColor: Colors.black,
+          displayColor: Colors.black,
+        ),
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Colors.black,
+          contentTextStyle: TextStyle(color: Colors.white),
+          actionTextColor: Colors.white,
+        ),
       ),
       home: MyHomePage(),
     );
