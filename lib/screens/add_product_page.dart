@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -87,43 +90,55 @@ class _AddProductPageState extends State<AddProductPage> {
     return null;
   }
 
-  void _onSave() {
-    if (_formKey.currentState?.validate() ?? false) {
-      final product = {
-        'name': _nameController.text.trim(),
-        'price': int.parse(_priceController.text.trim()),
-        'description': _descriptionController.text.trim(),
-        'thumbnail': _thumbnailController.text.trim(),
-        'category': _selectedCategory ?? '',
-        'is_featured': _isFeatured,
-      };
+  Future<void> _onSave() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-      showDialog<void>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Produk Baru'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: [
-                Text('Name: ${product['name']}'),
-                Text('Price: ${product['price']}'),
-                Text('Description: ${product['description']}'),
-                Text('Thumbnail: ${product['thumbnail']}'),
-                Text('Category: ${product['category']}'),
-                Text(
-                  'Is Featured: ${product['is_featured'] == true ? 'Yes' : 'No'}',
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+    final product = {
+      'name': _nameController.text.trim(),
+      'price': int.parse(_priceController.text.trim()),
+      'description': _descriptionController.text.trim(),
+      'thumbnail': _thumbnailController.text.trim(),
+      'category': _selectedCategory ?? '',
+      'is_featured': _isFeatured,
+    };
+
+    // TODO: sesuaikan base URL backend sesuai environment-mu.
+    final uri = Uri.parse('http://10.0.2.2:8000/main/create-flutter/');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(product),
       );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produk berhasil ditambahkan')),
+        );
+        Navigator.of(
+          context,
+        ).pop(true); // kembali ke halaman sebelumnya dengan status sukses
+      } else {
+        String message = 'Gagal menambahkan produk';
+        try {
+          final body = jsonDecode(response.body);
+          if (body is Map && body['message'] is String) {
+            message = body['message'] as String;
+          }
+        } catch (_) {}
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 

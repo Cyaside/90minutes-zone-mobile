@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:_90minutes_zone_mobile/screens/add_product_page.dart';
 
-/// A project-specific left drawer for the 90minutesZone app.
-///
-/// This replaces the old template and provides two entries:
-/// - "Halaman Utama" which closes the drawer and returns to root
-/// - "Tambah Produk" which opens the product form page
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
 

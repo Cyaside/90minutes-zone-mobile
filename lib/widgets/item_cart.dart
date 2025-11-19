@@ -1,3 +1,4 @@
+import 'package:_90minutes_zone_mobile/screens/product_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:_90minutes_zone_mobile/screens/add_product_page.dart';
 import 'package:_90minutes_zone_mobile/models/item_homepage.dart';
@@ -21,27 +22,39 @@ class ItemCard extends StatelessWidget {
       child: InkWell(
         // Aksi ketika kartu ditekan.
         onTap: () {
-          if (item.name.toLowerCase() == 'create products') {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const AddProductPage()),
+          final nameLower = item.name.toLowerCase();
+          if (nameLower == 'create products') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AddProductPage()),
             );
-            return;
-          }
-          // Menampilkan pesan SnackBar saat kartu ditekan.
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!"),
+          } else if (item.name == 'All Products') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ProductListPage()),
+            );
+          } else if (item.name == 'My Products') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ProductListPage(showOnlyMyProducts: true),
               ),
             );
+          } else {
+            // Existing behavior for other items
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text("Kamu telah menekan tombol ${item.name}!"),
+                ),
+              );
+          }
         },
-        // Container untuk menyimpan Icon dan Text
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Center(
             child: Column(
-              // Menyusun ikon dan teks di tengah kartu.
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(item.icon, color: Colors.white, size: 30.0),
