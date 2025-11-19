@@ -103,7 +103,9 @@ class _AddProductPageState extends State<AddProductPage> {
     };
 
     // TODO: sesuaikan base URL backend sesuai environment-mu.
-    final uri = Uri.parse('http://10.0.2.2:8000/main/create-flutter/');
+    final uri = Uri.parse(
+      'https://tristan-rasheed-90minuteszone.pbp.cs.ui.ac.id/create-flutter/',
+    );
 
     try {
       final response = await http.post(
