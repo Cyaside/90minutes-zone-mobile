@@ -3,6 +3,20 @@ import 'package:_90minutes_zone_mobile/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
+class AuthState extends ChangeNotifier {
+  String? _username;
+  String? get username => _username;
+  void setUsername(String uname) {
+    _username = uname;
+    notifyListeners();
+  }
+
+  void clear() {
+    _username = null;
+    notifyListeners();
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -12,11 +26,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<CookieRequest>(
-      create: (_) {
-        CookieRequest request = CookieRequest();
-        return request;
-      },
+    return MultiProvider(
+      providers: [
+        Provider<CookieRequest>(create: (_) => CookieRequest()),
+        ChangeNotifierProvider<AuthState>(create: (_) => AuthState()),
+      ],
       child: MaterialApp(
         title: '90minutesZone',
         theme: ThemeData(

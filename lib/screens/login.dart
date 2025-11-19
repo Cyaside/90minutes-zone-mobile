@@ -2,6 +2,7 @@ import 'package:_90minutes_zone_mobile/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:_90minutes_zone_mobile/main.dart';
 import 'package:_90minutes_zone_mobile/screens/register.dart';
 
 void main() {
@@ -112,6 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                       if (request.loggedIn) {
                         // pbp_django_auth tandai loggedIn kalau status code 200.
                         String uname = response['username'];
+                        // simpan username ke AuthState agar bisa filter my products
+                        if (context.mounted) {
+                          context.read<AuthState>().setUsername(uname);
+                        }
                         if (context.mounted) {
                           Navigator.pushReplacement(
                             context,

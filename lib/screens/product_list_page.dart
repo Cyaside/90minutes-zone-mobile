@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:_90minutes_zone_mobile/main.dart';
 
 import '../models/item_entry.dart';
 import 'product_detail_page.dart';
@@ -26,20 +27,34 @@ class _ProductListPageState extends State<ProductListPage> {
   Future<List<ItemEntry>> _loadItems() async {
     final request = context.read<CookieRequest>();
 
-    final String url;
-    if (widget.showOnlyMyProducts) {
-      url =
-          'https://tristan-rasheed-90minuteszone.pbp.cs.ui.ac.id/json/user-products/';
-    } else {
-      url = 'https://tristan-rasheed-90minuteszone.pbp.cs.ui.ac.id/json/';
-    }
-
+    // Selalu fetch semua produk; filter client-side jika showOnlyMyProducts.
+    final url = 'https://tristan-rasheed-90minuteszone.pbp.cs.ui.ac.id/json/';
     final response = await request.get(url);
 
-    // show_json returns a list of dicts already (not Django-serialized JSON).
-    final List<dynamic> dataList = response is List ? response : [];
+    final List<dynamic> rawList = response is List ? response : [];
 
-    return dataList.map<ItemEntry>((dynamic item) {
+    // Ambil username login dari response login tersimpan di CookieRequest (jika ada)
+    // Jika tidak tersedia, kita fallback ke string kosong agar filter tidak menghapus semua.
+    // pbp_django_auth tidak expose langsung username, jadi bisa simpan di state Global (belum ada di sini).
+    // Untuk sekarang, gunakan user_username dari tiap item untuk comparing terhadap first occurrence.
+
+    // Jika user ingin my products tapi backend endpoint khusus tidak bisa diakses,
+    // kita filter berdasarkan user_username paling pertama yang cocok dengan produk yg baru ditambahkan.
+    // Idealnya: simpan username saat login (misal via Provider) lalu gunakan di sini.
+
+    // Ambil username dari AuthState (diset saat login)
+    final currentUsername = context.read<AuthState>().username;
+
+    final filtered = widget.showOnlyMyProducts
+        ? rawList.where((e) {
+            if (e is! Map) return false;
+            final uname = e['user_username'];
+            if (uname == null || currentUsername == null) return false;
+            return uname == currentUsername;
+          }).toList()
+        : rawList;
+
+    return filtered.map<ItemEntry>((dynamic item) {
       final map = Map<String, dynamic>.from(item as Map);
       return ItemEntry(
         model: 'main.product',
