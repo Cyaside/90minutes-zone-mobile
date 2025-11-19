@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -101,37 +102,24 @@ class _AddProductPageState extends State<AddProductPage> {
       'category': _selectedCategory ?? '',
       'is_featured': _isFeatured,
     };
-
-    // TODO: sesuaikan base URL backend sesuai environment-mu.
-    final uri = Uri.parse(
-      'https://tristan-rasheed-90minuteszone.pbp.cs.ui.ac.id/create-flutter/',
-    );
+    final request = context.read<CookieRequest>();
 
     try {
-      final response = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(product),
+      final response = await request.postJson(
+        'https://tristan-rasheed-90minuteszone.pbp.cs.ui.ac.id/create-flutter/',
+        jsonEncode(product),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (!mounted) return;
+      if (!mounted) return;
+
+      if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Produk berhasil ditambahkan')),
         );
-        Navigator.of(
-          context,
-        ).pop(true); // kembali ke halaman sebelumnya dengan status sukses
+        Navigator.of(context).pop(true);
       } else {
-        String message = 'Gagal menambahkan produk';
-        try {
-          final body = jsonDecode(response.body);
-          if (body is Map && body['message'] is String) {
-            message = body['message'] as String;
-          }
-        } catch (_) {}
-
-        if (!mounted) return;
+        final message = (response['message'] ?? 'Gagal menambahkan produk')
+            .toString();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(message)));
